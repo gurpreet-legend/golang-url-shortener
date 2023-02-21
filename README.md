@@ -28,6 +28,7 @@ A golang implementation of URL shortener like <a href="https://bitly.com/">Bitly
 - Clone the repository using `git clone <repo_url>`
 - Go to the project directory using `cd golang-url-shortener`
 - Install docker and docker-compose on windows, follow these [instructions](https://docs.docker.com/desktop/install/windows-install/) for easy setup.
+- Create a `.env` file in `/api/` folder similar to `.env.example` file. 
 - Run `docker-compose up -d` to spin the docker containers for Go-Fiber server and Redis database at ports `localhost:3000` and `localhost:6379` respectively.
 - You can test the API using [postman](https://www.postman.com/) or VSCode's [thunder client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client) using following api call:
   - POST request at `localhost:3000/api/v1` with body
