@@ -28,10 +28,6 @@ type response struct {
 	XRateLimitReset time.Duration `json:"rate_limit_reset"`
 }
 
-//	type IPCounter struct {
-//		IP		string
-//		Count	int
-//	}
 var IPArray = map[string]int{}
 
 func ShortenURL(c *fiber.Ctx) error {
@@ -49,7 +45,7 @@ func ShortenURL(c *fiber.Ctx) error {
 	fmt.Println(val)
 	fmt.Println(err)
 	fmt.Println(c.IP())
-	if err != redis.Nil {
+	if err == redis.Nil {
 		fmt.Println("VAL NHI AAYI")
 		_ = r2.Set(database.Ctx, c.IP(), os.Getenv("API_QUOTA"), 30*60*time.Second).Err()
 	} else {
@@ -67,19 +63,6 @@ func ShortenURL(c *fiber.Ctx) error {
 			})
 		}
 	}
-	r2.Decr(database.Ctx, c.IP())
-
-	// if _, ok := IPArray[c.IP()]; !ok {
-	// 	fmt.Print("VAL NHI AAYI\n")
-	// 	IPArray[c.IP()] = 10
-	// } else {
-	// 	fmt.Print("VAL AAGYI\n")
-	// 	val := IPArray[c.IP()]
-	// 	if val <= 0 {
-	// 		fmt.Print("LIMIT REACHED\n")
-	// 	}
-	// }
-	// IPArray[c.IP()] -= 1
 
 	// Check for valid URL
 	if !govalidator.IsURL(body.URL) {
@@ -130,10 +113,9 @@ func ShortenURL(c *fiber.Ctx) error {
 		XRateRemaining:  10,
 		XRateLimitReset: 30,
 	}
-
+	r2.Decr(database.Ctx, c.IP())
 	val, _ = r2.Get(database.Ctx, c.IP()).Result()
 	resp.XRateRemaining, _ = strconv.Atoi(val)
-	// resp.XRateRemaining, _ = IPArray[c.IP()]
 
 	ttl, _ := r2.TTL(database.Ctx, c.IP()).Result()
 	resp.XRateLimitReset = ttl / time.Nanosecond / time.Minute

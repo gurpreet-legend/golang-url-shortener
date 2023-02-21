@@ -17,6 +17,10 @@ func CreateClient(dbNo int) *redis.Client {
 		DB:       dbNo,
 	})
 	pong, err := rdb.Ping(Ctx).Result()
-	fmt.Println(pong, err)
+	if err != nil {
+		fmt.Print("Unable to connect to database")
+	} else {
+		fmt.Print("Connection established!", pong)
+	}
 	return rdb
 }
